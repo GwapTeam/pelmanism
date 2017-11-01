@@ -8,9 +8,10 @@ window.onload = function() {
     var canvas = document.getElementById("canvas");
     // 結果表示用Element
     var resultElement = document.getElementById("result");
+    var correctAnsElement = document.getElementById("correctAns");
 
     var stage = new createjs.Stage(canvas);
-
+    // キャンバスサイズ(ここでのサイズ変更はできません)
     var canWidth = 600;
     var canHeight = 600;
 
@@ -19,15 +20,20 @@ window.onload = function() {
     // 結果表示中フラグ
     var waitingFlag = false;
 
+    // 現在の正解数
+    var limit = 0;
+    // カードの枚数(デバッグのため 13 -> 3 に変更しています。)
+    const cardNum = 3;
+
     var field = new createjs.Container();
     stage.addChild(field);
 
     // 2種類のトランプを使用
     for (let mark of ["♧", "♢"]) {
         // 13の数字を用意
-        for (let i = 1; i < 13; i++) {
+        for (let i = 1; i <= cardNum; i++) {
             let rect = new createjs.Shape();
-            let text = new createjs.Text(mark + i, "80px Arial", "red");
+            let text = new createjs.Text(mark + i, "28px Arial", "red");
 
             // カードを開く処理
             rect.open = function() {
@@ -57,10 +63,9 @@ window.onload = function() {
             }
 
             // カードの場所
-            let x = getRandom(0, 500);
-            let y = getRandom(0, 500);
+            let x = getRandom(50, 500);
+            let y = getRandom(50, 500);
             let rotation = getRandom(0, 90);
-
 
             // カードの場所を設定
             rect.x = x;
@@ -76,6 +81,17 @@ window.onload = function() {
             text.x = x;
             text.y = y;
             text.rotation = rotation;
+
+            //処理の終了
+            rect.end = function() {
+                resultElement.innerText = " ";
+                var endText = new createjs.Text("おめでとう！", "80px Arial", "red");
+                endText.x = canWidth / 2;
+                endText.y = canHeight / 2;
+                endText.textAlign = "center";
+                endText.textBaseline = "middle";
+                field.addChild(endText);
+            }
 
             // カードクリック時の処理を登録
             rect.addEventListener(
@@ -113,16 +129,20 @@ window.onload = function() {
                                     // マッチ処理を走らす(両方とも削除)
                                     selectRect.match();
                                     rect.match();
+                                    limit++;
                                 } else {
                                     // close処理を走らす(両方ともカードを閉じる)
                                     selectRect.close();
                                     rect.close();
                                 }
-
+                                resultElement.innerText = "正解数：" + limit;
                                 // 選択中のカードをなくす
                                 selectRect = undefined;
-                                // クリック判定を有効化
+                                // クリック判定を無効化
                                 waitingFlag = false;
+                                if ( limit >= cardNum ){
+                                    rect.end();
+                                }
                             },
                             2000
                         )
