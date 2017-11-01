@@ -100,7 +100,7 @@ window.onload = function() {
                             isMatch = true;
                             resultElement.innerText = "正解！";
                         } else {
-                            isMatch = true;
+                            isMatch = false;
                             resultElement.innerText = "間違い！";
                         }
 
