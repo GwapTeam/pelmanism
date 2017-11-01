@@ -8,7 +8,6 @@ window.onload = function() {
     var canvas = document.getElementById("canvas");
     // 結果表示用Element
     var resultElement = document.getElementById("result");
-    var correctAnsElement = document.getElementById("correctAns");
 
     var stage = new createjs.Stage(canvas);
     // キャンバスサイズ(ここでのサイズ変更はできません)
@@ -27,6 +26,17 @@ window.onload = function() {
 
     var field = new createjs.Container();
     stage.addChild(field);
+
+    //処理の終了
+    function end() {
+        resultElement.innerText = "";
+        var endText = new createjs.Text("おめでとう！", "80px Arial", "red");
+        endText.x = canWidth / 2;
+        endText.y = canHeight / 2;
+        endText.textAlign = "center";
+        endText.textBaseline = "middle";
+        field.addChild(endText);
+    }
 
     // 2種類のトランプを使用
     for (let mark of ["♧", "♢"]) {
@@ -82,17 +92,6 @@ window.onload = function() {
             text.y = y;
             text.rotation = rotation;
 
-            //処理の終了
-            rect.end = function() {
-                resultElement.innerText = " ";
-                var endText = new createjs.Text("おめでとう！", "80px Arial", "red");
-                endText.x = canWidth / 2;
-                endText.y = canHeight / 2;
-                endText.textAlign = "center";
-                endText.textBaseline = "middle";
-                field.addChild(endText);
-            }
-
             // カードクリック時の処理を登録
             rect.addEventListener(
                 "click",
@@ -140,8 +139,8 @@ window.onload = function() {
                                 selectRect = undefined;
                                 // クリック判定を無効化
                                 waitingFlag = false;
-                                if ( limit >= cardNum ){
-                                    rect.end();
+                                if (limit >= cardNum){
+                                    end();
                                 }
                             },
                             2000
