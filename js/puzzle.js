@@ -36,6 +36,8 @@ window.onload = function() {
         endText.textAlign = "center";
         endText.textBaseline = "middle";
         field.addChild(endText);
+
+
     }
 
     // 2種類のトランプを使用
@@ -43,14 +45,14 @@ window.onload = function() {
         // 13の数字を用意
         for (let i = 1; i <= cardNum; i++) {
             let rect = new createjs.Shape();
-            let text = new createjs.Text(mark + i, "28px Arial", "red");
+            let text = new createjs.Text(mark + i, "28px Arial", "blue");
 
             // カードを開く処理
             rect.open = function() {
                 // 元のグラフィックを削除し外枠を緑に変更
                 rect.graphics.clear()
                     .setStrokeStyle(2)
-                    .beginStroke("green")
+                    .beginStroke("black")
                     .drawRect(0, 0, 60, 80);
 
                 // テキストを表示(フィールドに追加)
@@ -61,7 +63,9 @@ window.onload = function() {
             rect.close = function() {
                   // 元のグラフィックを削除し黒く塗りつぶす
                   rect.graphics.clear()
-                      .beginFill("brack")
+                      .setStrokeStyle(2)
+                      .beginStroke("black")
+                      .beginFill("red")
                       .drawRect(0, 0, 60, 80);
                   // テキストを非表示(フィールドから削除)
                   field.removeChild(text);
