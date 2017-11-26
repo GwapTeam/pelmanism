@@ -1,9 +1,17 @@
+
+
 // 指定範囲の乱数取得関数
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
 
 window.onload = function() {
+    createjs.Ticker.addEventListener(
+        "tick",
+        function () {
+            stage.update();
+        }
+    );
 
     var canvas = document.getElementById("canvas");
     // 結果表示用Element
@@ -21,6 +29,7 @@ window.onload = function() {
 
     // 現在の正解数
     var limit = 0;
+    var mark = ["♧", "♢"];
     // カードの枚数(デバッグのため 13 -> 3 に変更しています。)
     const cardNum = 3;
 
@@ -41,11 +50,12 @@ window.onload = function() {
     }
 
     // 2種類のトランプを使用
-    for (let mark of ["♧", "♢"]) {
+    for (let j = 0; j < 2; j++) {
         // 13の数字を用意
         for (let i = 1; i <= cardNum; i++) {
             let rect = new createjs.Shape();
-            let text = new createjs.Text(mark + i, "28px Arial", "blue");
+
+            let text = new createjs.Text(mark[j] + i, "28px Arial", "blue");
 
             // カードを開く処理
             rect.open = function() {
@@ -159,10 +169,5 @@ window.onload = function() {
         }
     }
 
-    createjs.Ticker.addEventListener(
-        "tick",
-        function () {
-            stage.update();
-        }
-    );
+
 }
