@@ -114,7 +114,7 @@ window.onload = function() {
                   .setStrokeStyle(2)
                   .beginStroke("black")
                   .beginFill("white")
-                  .drawRect(0, 0, 100, 50);
+                  .drawRect(0, 0, 115, 50);
         buttonAgain.addChild(buttonAgainRect);
 
         var buttonAgainLabel = new createjs.Text("Again!", "40px Arial", "black");
