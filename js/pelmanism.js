@@ -39,8 +39,8 @@ window.onload = function() {
     var buttonAgain;
     var endText;
     var gameoverText;
-    var clickCount= 0 ;
-    var clickCountLimit = 6;
+    var missCount= 0 ;
+    var missCountLimit = 3;
     start();
 
 
@@ -120,7 +120,6 @@ window.onload = function() {
         var buttonAgainLabel = new createjs.Text("Again!", "40px Arial", "black");
         buttonAgain.addChild(buttonAgainLabel);
 
-
         buttonEasy.addEventListener(
             "click",
             function() {
@@ -146,9 +145,12 @@ window.onload = function() {
 
     }
     //処理の終了
-    function end() {
+    function end(text) {
+        stage.removeAllChildren();
+        limit = 0;
+        missCount = 0;
         resultElement.innerText = "";
-        endText = new createjs.Text("おめでとう！", "80px Arial", "red");
+        endText = new createjs.Text(text, "80px Arial", "red");
         endText.x = canWidth / 2;
         endText.y = canHeight / 2 - 100;
         endText.textAlign = "center";
@@ -231,7 +233,6 @@ window.onload = function() {
                 rect.addEventListener(
                     "click",
                     function () {
-                        clickCount += 1;
                         // 判定処理表示中　または　同じカードをクリックした時は処理をしない
                         if (waitingFlag || selectRect == rect) {
                            return
@@ -253,6 +254,7 @@ window.onload = function() {
                             } else {
                                 isMatch = false;
                                 resultElement.innerText = "間違い！";
+                                missCount += 1;
                             }
 
                             // 全てのクリック判定を無効化
@@ -273,31 +275,12 @@ window.onload = function() {
                                     resultElement.innerText = "正解数：" + limit;
                                     // 選択中のカードをなくす
                                     selectRect = undefined;
-                                    // クリック判定を無効化
+                                    // クリック判定を有効化
                                     waitingFlag = false;
                                     if (limit >= cardNum){
-                                        limit = 0;
-                                        clickCount = 0;
-                                        end();
-                                    }else if(clickCount >= clickCountLimit) {
-                                        limit = 0;
-                                        clickCount = 0;
-                                        stage.removeAllChildren();
-                                        resultElement.innerText = "";
-                                        gameoverText = new createjs.Text("残念！", "80px Arial", "red");
-                                        gameoverText.x = canWidth / 2;
-                                        gameoverText.y = canHeight / 2 - 100;
-                                        gameoverText.textAlign = "center";
-                                        gameoverText.textBaseline = "middle";
-                                        stage.addChild(gameoverText);
-                                        stage.addChild(buttonAgain);
-
-                                        buttonAgain.addEventListener(
-                                            "click",
-                                            function() {
-                                                start();
-                                        }
-                                    )
+                                        end("おめでとう！");
+                                    } else if(missCount >= missCountLimit) {
+                                        end("残念！");
                                     }
                                 },
                                 100
