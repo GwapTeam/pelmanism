@@ -38,16 +38,17 @@ window.onload = function() {
     var buttonHard;
     var buttonAgain;
     var endText;
-    var gameoverText;
+
     var missCount= 0 ;
     var missCountLimit = 3;
     start();
 
 
     function start() {
+
         stage.removeChild(endText);
         stage.removeChild(buttonAgain);
-        stage.removeChild(gameoverText);
+
         startText = new createjs.Text("神経衰弱ゲーム", "80px Arial", "black");
         startText.x = canWidth / 2 ;            //テキスト位置　x
         startText.y = canHeight / 2 - 100;      //テキスト位置　y
@@ -127,10 +128,11 @@ window.onload = function() {
                 main();
             }
         )
+
         buttonNormal.addEventListener(
             "click",
             function() {
-                cardNum = 2;
+                cardNum = 3;
                 main();
             }
         )
@@ -142,8 +144,8 @@ window.onload = function() {
                 main();
             }
         )
-
     }
+
     //処理の終了
     function end(text) {
         stage.removeAllChildren();
@@ -167,11 +169,11 @@ window.onload = function() {
     }
 
     function main() {
+
         stage.removeChild(startText);
         stage.removeChild(buttonEasy);
         stage.removeChild(buttonNormal);
         stage.removeChild(buttonHard);
-        stage.removeChild(endText);
 
         // 2種類のトランプを使用
         for (let j = 0; j < 2; j++) {
@@ -279,9 +281,11 @@ window.onload = function() {
                                     waitingFlag = false;
                                     if (limit >= cardNum){
                                         end("おめでとう！");
+
                                     } else if(missCount >= missCountLimit) {
                                         end("残念！");
                                     }
+
                                 },
                                 100
                             )
