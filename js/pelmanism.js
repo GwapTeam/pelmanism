@@ -57,18 +57,18 @@ window.onload = function() {
         stage.addChild(startText);
 
         buttonEasy = new createjs.Container();
-        buttonEasy.x = 150;                         //ボタン位置　x
-        buttonEasy.y = 350;                         //ボタン位置　y
+        buttonEasy.x = canWidth / 2 - 205;                         //ボタン位置　x
+        buttonEasy.y = canHeight / 2 + 50;                         //ボタン位置　y
         stage.addChild(buttonEasy);
 
         buttonNormal = new createjs.Container();
-        buttonNormal.x = 275;
-        buttonNormal.y = 350;
+        buttonNormal.x = canWidth / 2 - 65;
+        buttonNormal.y = canHeight / 2 + 50;
         stage.addChild(buttonNormal);
 
         buttonHard = new createjs.Container();
-        buttonHard.x = 450;                         //ボタン位置　x
-        buttonHard.y = 350;                         //ボタン位置　y
+        buttonHard.x = canWidth / 2 + 115;                         //ボタン位置　x
+        buttonHard.y = canHeight / 2 + 50;                         //ボタン位置　y
         stage.addChild(buttonHard);
 
 
