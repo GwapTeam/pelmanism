@@ -1,4 +1,3 @@
-
 // 指定範囲の乱数取得関数
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
@@ -36,8 +35,20 @@ window.onload = function() {
     var buttonEasy;
     var buttonNormal;
     var buttonHard;
+    var buttonBattle;
     var buttonAgain;
     var endText;
+
+    var battleFlag = false;
+    var playerChangeFlag = false;
+    var player = 0;
+    var player1Score;
+    var player2Score;
+    var bgText;
+
+    var endResult;
+    var endScore1;
+    var endScore2;
 
     var missCount= 0 ;
     var missCountLimit = 3;
@@ -46,8 +57,18 @@ window.onload = function() {
 
     function start() {
 
+        battleFlag = false;
+        playerChangeFlag = false;
+        player = 0;
+        player1Score = 0;
+        player2Score = 0;
+
+
         stage.removeChild(endText);
         stage.removeChild(buttonAgain);
+        stage.removeChild(endResult);
+        stage.removeChild(endScore1);
+        stage.removeChild(endScore2);
 
         startText = new createjs.Text("神経衰弱ゲーム", "80px Arial", "black");
         startText.x = canWidth / 2 ;            //テキスト位置　x
@@ -71,6 +92,10 @@ window.onload = function() {
         buttonHard.y = canHeight / 2 + 50;                         //ボタン位置　y
         stage.addChild(buttonHard);
 
+        buttonBattle = new createjs.Container();
+        buttonBattle.x = canWidth / 2 - 55;
+        buttonBattle.y = canHeight / 2 + 150;
+        stage.addChild(buttonBattle);
 
         var buttonEasyRect = new createjs.Shape();
         buttonEasyRect.graphics                     //ボタングラフィック
@@ -96,6 +121,14 @@ window.onload = function() {
                   .drawRect(0, 0, 90, 50);
         buttonHard.addChild(buttonHardRect);
 
+        var buttonBattleRect = new createjs.Shape();
+        buttonBattleRect.graphics
+                  .setStrokeStyle(2)
+                  .beginStroke("black")
+                  .beginFill("white")
+                  .drawRect(0, 0, 105, 50);
+        buttonBattle.addChild(buttonBattleRect);
+
         var buttonEasyLabel = new createjs.Text("Easy", "40px Arial", "black");
         buttonEasy.addChild(buttonEasyLabel);
 
@@ -105,10 +138,13 @@ window.onload = function() {
         var buttonHardLabel = new createjs.Text("Hard", "40px Arial", "black");
         buttonHard.addChild(buttonHardLabel);
 
+        var buttonBattleLabel = new createjs.Text("Battle", "40px Arial", "black");
+        buttonBattle.addChild(buttonBattleLabel);
 
         buttonAgain = new createjs.Container();
-        buttonAgain.x = 200;
-        buttonAgain.y = 300;
+        buttonAgain.x = canWidth / 2 - 50;
+        buttonAgain.y = canHeight / 2 - 50;
+
 
         var buttonAgainRect = new createjs.Shape();
         buttonAgainRect.graphics                     //ボタングラフィック
@@ -144,6 +180,18 @@ window.onload = function() {
                 main();
             }
         )
+
+        buttonBattle.addEventListener(
+            "click",
+            function() {
+                cardNum = 5;
+                battleFlag = true;
+                player = 1;
+                bgText = new createjs.Text("player" + player, "80px Arial", "black");
+                stage.addChild(bgText);
+                main();
+            }
+        )
     }
 
     //処理の終了
@@ -151,6 +199,7 @@ window.onload = function() {
         stage.removeAllChildren();
         limit = 0;
         missCount = 0;
+        battleFlag = false;
         resultElement.innerText = "";
         endText = new createjs.Text(text, "80px Arial", "red");
         endText.x = canWidth / 2;
@@ -168,17 +217,62 @@ window.onload = function() {
         )
     }
 
+    function endBattle(score1, score2) {
+        stage.removeAllChildren();
+        limit = 0;
+        missCount = 0;
+        battleFlag = false;
+        resultElement.innerText = "";
+        endScore1 = new createjs.Text("Player1:" + score1, "40px Arial", "black");
+        endScore1.x = canWidth / 2;
+        endScore1.y = canHeight / 2 - 200;
+        endScore1.textAlign = "center";
+        endScore1.textBaseline = "middle";
+        stage.addChild(endScore1);
+        endScore2 = new createjs.Text("Player2:" + score2, "40px Arial", "black");
+        endScore2.x = canWidth / 2;
+        endScore2.y = canHeight / 2 - 150;
+        endScore2.textAlign = "center";
+        endScore2.textBaseline = "middle";
+        stage.addChild(endScore2);
+        var battleResult = "";
+        if(score1 > score2) {
+            battleResult = "Player1の勝ち！";
+        } else if (score1 == score2) {
+            battleResult = "引き分け！";
+        } else {
+            battleResult = "Player2の勝ち！";
+        }
+        endResult = new createjs.Text(battleResult, "40px Arial", "black");
+        endResult.x = canWidth / 2;
+        endResult.y = canHeight / 2 - 100;
+        endResult.textAlign = "center";
+        endResult.textBaseline = "middle";
+        stage.addChild(endResult);
+        stage.addChild(buttonAgain);
+
+        buttonAgain.addEventListener(
+            "click",
+            function() {
+                start();
+            }
+        )
+    }
+
+
     function main() {
 
         stage.removeChild(startText);
         stage.removeChild(buttonEasy);
         stage.removeChild(buttonNormal);
         stage.removeChild(buttonHard);
+        stage.removeChild(buttonBattle);
 
         // 2種類のトランプを使用
         for (let j = 0; j < 2; j++) {
             // 13の数字を用意
             for (let i = 1; i <= cardNum; i++) {
+
                 let rect = new createjs.Shape();
 
                 let text = new createjs.Text(mark[j] + i, "28px Arial", "blue");
@@ -253,10 +347,20 @@ window.onload = function() {
                             if (selectRect.number == rect.number) {
                                 isMatch = true;
                                 resultElement.innerText = "正解！";
+                                switch(player) {
+                                    case 1:
+                                        player1Score ++;
+                                        break;
+                                    case 2:
+                                        player2Score ++;
+                                        break;
+                                }
+
                             } else {
                                 isMatch = false;
                                 resultElement.innerText = "間違い！";
                                 missCount += 1;
+                                playerChangeFlag = true;
                             }
 
                             // 全てのクリック判定を無効化
@@ -274,21 +378,43 @@ window.onload = function() {
                                         selectRect.close();
                                         rect.close();
                                     }
-                                    resultElement.innerText = "正解数：" + limit;
+                                    if(playerChangeFlag == true) {
+                                        missCount = 0;
+                                            switch (player) {
+                                                case 1:
+                                                    player = 2;
+                                                    break;
+                                                case 2:
+                                                    player = 1;
+                                                    break;
+                                            }
+                                    }
+                                    if (battleFlag == true) {
+                                        bgText.text = "player" + player;
+                                        resultElement.innerText = "player1:" + player1Score + "\n" + "player2:" + player2Score;
+                                    }else {
+                                        resultElement.innerText = "正解数：" + limit;
+                                    }
+
                                     // 選択中のカードをなくす
                                     selectRect = undefined;
                                     // クリック判定を有効化
                                     waitingFlag = false;
-                                    if (limit >= cardNum){
-                                        end("おめでとう！");
 
+                                    playerChangeFlag = false;
+                                    if (limit >= cardNum){
+                                        if (battleFlag == true) {
+                                            endBattle(player1Score, player2Score);
+                                        }else {
+                                            end("おめでとう！");
+                                        }
                                     } else if(missCount >= missCountLimit) {
                                         end("残念！");
                                     }
-
                                 },
-                                100
+                                2000
                             )
+
                         }
                     }
                 )
