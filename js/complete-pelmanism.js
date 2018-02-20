@@ -48,7 +48,7 @@ window.onload = function() {
                 rect.graphics.clear()
                     .setStrokeStyle(2)
                     .beginStroke("black")
-                    .beginFill("green")
+                    .beginFill("lightblue")
                     .drawRect(0, 0, 60, 80);
                 stage.addChild(rect);
                 stage.addChild(text);

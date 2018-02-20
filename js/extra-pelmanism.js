@@ -273,6 +273,7 @@ window.onload = function() {
                     rect.graphics.clear()
                         .setStrokeStyle(2)
                         .beginStroke("black")
+                        .beginFill("lightblue")
                         .drawRect(0, 0, 60, 80);
                     stage.addChild(text);
                 }
